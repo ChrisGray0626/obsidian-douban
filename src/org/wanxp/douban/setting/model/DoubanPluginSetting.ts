@@ -45,5 +45,7 @@ export interface DoubanPluginSetting {
 	arraySettings: ArraySetting[],
 	scoreSetting: ScoreSetting,
 	searchDefaultType: SupportType,
+	frodoApiKeySecretId: string,
+	frodoSigningSecretId: string,
 	arrayLengthLimits: ArrayLengthLimit[],
 }

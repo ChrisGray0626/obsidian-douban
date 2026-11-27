@@ -320,6 +320,14 @@ export default {
 
 	//	'121410': `Search Default Type`,
 	// 	'121411': `Search defuault type for open command palette 'search douban and create file'`,
+	// 文案用于应用凭据设置，以及公开导入中网络和个人记录的失败提示。
+	frodoApiKey: "豆瓣 Frodo 应用密钥",
+	frodoApiKeyDesc: "可选。选择自己的授权应用密钥可覆盖内置凭据。",
+	frodoSigningSecret: "豆瓣 Frodo 签名密钥",
+	frodoSigningSecretDesc: "可选。选择同一应用的签名密钥，两项均可用时自定义凭据才会生效。",
+	frodoRequestFailed: "豆瓣 Frodo 请求失败。请稍后重试，或检查已配置的自定义凭据。",
+	frodoUserStateUnavailable: "暂时无法读取你的豆瓣记录，本次只导入公开元数据。",
+	frodoInvalidResponse: "豆瓣 Frodo 的响应缺少预期数据。",
 	'121410': `默认搜索类型`,
 	'121411': `在打开"搜索豆瓣并创建文件"时默认搜索的类型`,
 

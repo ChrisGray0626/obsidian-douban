@@ -136,7 +136,8 @@ export default class DoubanPlugin extends Plugin {
 	async search(searchTerm: string, searchType: SupportType, context: HandleContext) {
 		try {
 			this.showStatus(i18nHelper.getMessage('140201', searchTerm));
-			const result:SearchPage = await SearcherV2.search(searchTerm, searchType, 1, SEARCH_ITEM_PAGE_SIZE, this.settings, context.plugin.settingsManager);
+			// 首次搜索和后续翻页使用同一份导入上下文，由 SearcherV2 选择取数接口。
+			const result:SearchPage = await SearcherV2.search(searchTerm, searchType, 1, SEARCH_ITEM_PAGE_SIZE, context);
 			this.showStatus(i18nHelper.getMessage('140202', result.list.toString()));
 			context.searchPage = result;
 			new DoubanFuzzySuggester(this, context, searchTerm).showSearchPage(result);

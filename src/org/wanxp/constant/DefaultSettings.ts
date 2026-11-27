@@ -63,6 +63,9 @@ export const DEFAULT_SETTINGS: DoubanPluginSetting = {
 		maxStar: 5,
 	},
 	searchDefaultType: SupportType.all,
+	// Frodo
+	frodoApiKeySecretId: "",
+	frodoSigningSecretId: "",
 	arrayLengthLimits: [],
 
 }

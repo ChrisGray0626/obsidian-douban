@@ -1,5 +1,5 @@
 import I18nHelper, {i18nHelper} from "../../lang/helper";
-import {Platform, Setting} from "obsidian";
+import {Platform, SecretComponent, Setting} from "obsidian";
 import {DEFAULT_SETTINGS} from "../../constant/DefaultSettings";
 import SettingsManager from "./SettingsManager";
 import DoubanLoginModel from "../component/DoubanLoginModel";
@@ -111,6 +111,27 @@ export function constructBasicUI(containerEl: HTMLElement, manager: SettingsMana
 					await manager.plugin.saveSettings();
 				});
 		});
+
+	// 旧版 Obsidian 可以使用内置凭据，只有提供密钥库组件的版本才显示自定义入口。
+	if (manager.plugin.app.secretStorage) {
+		// 每行依次是设置字段、界面标题和说明文案的键。
+		const fields = [
+			["frodoApiKeySecretId", "frodoApiKey", "frodoApiKeyDesc"],
+			["frodoSigningSecretId", "frodoSigningSecret", "frodoSigningSecretDesc"],
+		] as const;
+		for (const [key, name, desc] of fields) {
+			const setting = new Setting(containerEl)
+				.setName(i18nHelper.getMessage(name))
+				.setDesc(i18nHelper.getMessage(desc));
+			new SecretComponent(manager.plugin.app, setting.controlEl)
+				.setValue(manager.plugin.settings[key])
+				.onChange(async value => {
+					// 组件返回所选密钥的 ID。清空选择时，客户端会重新采用内置凭据。
+					manager.plugin.settings[key] = value || "";
+					await manager.plugin.saveSettings();
+				});
+		}
+	}
 
 }
 

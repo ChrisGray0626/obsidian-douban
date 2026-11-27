@@ -1,4 +1,11 @@
 import {App} from "obsidian";
+import {i18nHelper} from "../../../lang/helper";
+import {log} from "../../../utils/Logutil";
+import {DoubanFrodoClient} from "./DoubanFrodoClient";
+import {DoubanFrodoSubjectLoader} from "./DoubanFrodoSubjectLoader";
+import type {DoubanSubjectLoader} from "./DoubanSubjectLoader";
+import type DoubanAbstractLoadHandler from "./DoubanAbstractLoadHandler";
+import {DoubanWebSubjectLoader} from "./DoubanWebSubjectLoader";
 
 import DoubanBookLoadHandler from "./DoubanBookLoadHandler";
 import DoubanMovieLoadHandler from "./DoubanMovieLoadHandler";
@@ -18,8 +25,8 @@ export class DoubanSearchChooseItemHandler {
 
 	private _app: App;
 	private _doubanPlugin: DoubanPlugin;
-	private _doubanSubjectHandlers: DoubanSubjectLoadHandler<DoubanSubject>[];
-	private _doubanSubjectHandlerDefault: DoubanSubjectLoadHandler<DoubanSubject>;
+	private _doubanSubjectHandlers: DoubanAbstractLoadHandler<DoubanSubject>[];
+	private _doubanSubjectHandlerDefault: DoubanAbstractLoadHandler<DoubanSubject>;
 
 
 	constructor(app: App, doubanPlugin: DoubanPlugin) {
@@ -38,13 +45,25 @@ export class DoubanSearchChooseItemHandler {
 		if (!searchExtract) {
 			return;
 		}
-		let doubanSubjectHandlers: DoubanSubjectLoadHandler<DoubanSubject>[] = this._doubanSubjectHandlers
-			.filter(h => h.support(searchExtract));
-		if (doubanSubjectHandlers && doubanSubjectHandlers.length > 0) {
-			return await doubanSubjectHandlers[0].handle(searchExtract.id, context);
-		} else {
-			return await this._doubanSubjectHandlerDefault.handle(searchExtract.id, context);
+		const handler = this.getHandler(searchExtract);
+		const type = handler.getSupportType();
+		try {
+			// 资源处理器先识别标准类型，导入入口据此选择详情加载策略。
+			const loader: DoubanSubjectLoader = DoubanFrodoClient.supports(type)
+				? new DoubanFrodoSubjectLoader(
+					DoubanFrodoClient.fromSettings(this._app, context.settings), type, subject => this.getHandler(subject),
+				)
+				: new DoubanWebSubjectLoader(handler);
+			const subject = await loader.load(searchExtract.id, context);
+			await this._doubanPlugin.putToObsidian(context, subject);
+			return subject;
+		} catch (e) {
+			log.error(i18nHelper.getMessage("130101", e.message), e);
 		}
+	}
+
+	private getHandler(subject: DoubanSubject): DoubanAbstractLoadHandler<DoubanSubject> {
+		return this._doubanSubjectHandlers.find(handler => handler.support(subject)) ?? this._doubanSubjectHandlerDefault;
 	}
 
 	public async parseText(extract: DoubanSubject, context: HandleContext): Promise<HandleResult> {

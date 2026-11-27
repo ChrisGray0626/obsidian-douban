@@ -270,6 +270,14 @@ PS: This file could be delete if you want to.
 	'121401': `Status Bar`,
 	'121402': `Display status bar when import data ?`,
 
+	// 文案用于应用凭据设置，以及公开导入中网络和个人记录的失败提示。
+	frodoApiKey: "Douban Frodo API key",
+	frodoApiKeyDesc: "Optional. Select your own authorized API key to override the built-in credentials.",
+	frodoSigningSecret: "Douban Frodo signing secret",
+	frodoSigningSecretDesc: "Optional. Select the signing secret for the same application. Custom credentials take effect when both are available.",
+	frodoRequestFailed: "The Douban Frodo request failed. Try again later or check your custom credentials if configured.",
+	frodoUserStateUnavailable: "Could not load your Douban activity. The note will use public metadata only.",
+	frodoInvalidResponse: "The Douban Frodo response did not contain the expected data.",
 	'121410': `Search Default Type`,
 	'121411': `Search defuault type when open command palette 'search douban and create file'`,
 

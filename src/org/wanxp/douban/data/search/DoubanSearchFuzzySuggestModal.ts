@@ -90,10 +90,15 @@ class DoubanFuzzySuggester extends FuzzySuggestModal<DoubanSearchResultSubject> 
 				break;
 		}
 		if (result) {
-			const searchPageResult: SearchPage =
-				await SearcherV2.search(this.searchItem, currentPage.type, currentPage.pageNum, SEARCH_ITEM_PAGE_SIZE, this.plugin.settings, this.plugin.settingsManager);
-			this.context.searchPage = searchPageResult;
-			this.updatePageResult(searchPageResult);
+			try {
+				const searchPageResult = await SearcherV2.search(this.searchItem, currentPage.type,
+					currentPage.pageNum, SEARCH_ITEM_PAGE_SIZE, this.context);
+				// 取到新一页后才替换当前分页状态。失败时列表仍保留原页结果。
+				this.context.searchPage = searchPageResult;
+				this.updatePageResult(searchPageResult);
+			} catch (e) {
+				log.error(i18nHelper.getMessage("130101", e.message), e);
+			}
 		}
 		return result;
 	}
@@ -111,7 +116,8 @@ class DoubanFuzzySuggester extends FuzzySuggestModal<DoubanSearchResultSubject> 
 	}
 
 	private initItems(searchPage: SearchPage) {
-		const doubanList: DoubanSearchResultSubject[] = searchPage.list;
+		// 翻页按钮是弹窗增加的选项。复制数组可避免把它们写进接口的条目列表。
+		const doubanList: DoubanSearchResultSubject[] = [...searchPage.list];
 
 		if (searchPage.type == SupportType.all && searchPage.pageNum == 1) {
 			if (doubanList.length == 0) {
@@ -122,7 +128,8 @@ class DoubanFuzzySuggester extends FuzzySuggestModal<DoubanSearchResultSubject> 
 			}
 		}
 		if (searchPage.hasNext) {
-			if (this.plugin.userComponent.isLogin()) {
+			// Frodo 的分页用应用凭据。网页结果仍根据账号登录状态显示下一页或登录提示。
+			if (searchPage.allowsAnonymousPagination || this.plugin.userComponent.isLogin()) {
 				if (searchPage.type == SupportType.all && searchPage.pageNum == 1) {
 					doubanList.push(DoubanSearchGroupPublishResultSubjectNextPage)
 				}else {

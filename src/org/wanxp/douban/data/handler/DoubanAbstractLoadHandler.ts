@@ -665,14 +665,13 @@ export default abstract class DoubanAbstractLoadHandler<T extends DoubanSubject>
 	}
 
 	private async handleImage(image: string, folder: string, filename: string, context: HandleContext, showError: boolean, headers?: any) {
-		//只有在桌面版且开启了图片上传才会使用PicGo，并且开启图床功能
-		if (context.settings.pictureBedFlag && Platform.isDesktopApp) {
-			//临时限定只支持PicGo
-			const checked = await context.netFileHandler.downloadDBUploadPicGoByClipboardBefore(context);
+		if (context.settings.pictureBedFlag) {
+			const checked = Platform.isDesktopApp && await context.netFileHandler.downloadDBUploadPicGoByClipboardBefore(context);
 			if (!checked) {
-				//TODO 国际化
-				log.notice('连接PicGo软件失败, 请检查是否已开启PicGo的Server服务 或 检查插件中配置地址是否正确，现使用默认的下载到本地的方式');
-				return  await context.netFileHandler.downloadDBFile(image, folder, filename, context, false, headers);
+				if (showError) {
+					log.notice(i18nHelper.getMessage("picGoUnavailable"));
+				}
+				return;
 			}
 			return await context.netFileHandler.downloadDBUploadPicGoByClipboard(image, filename, context, showError, headers);
 		}else {

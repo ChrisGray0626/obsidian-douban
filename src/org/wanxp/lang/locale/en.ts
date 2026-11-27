@@ -361,6 +361,7 @@ PS: This file could be delete if you want to.
 	'130106': `Can not use Douban this time, Please try Login In Douban Plugin. If not working please again after 12 hour or 24 hour. Or you can reset your connection `,
 	'130404': `404 Url Not Found`,
 	'130109': `Downloaded image is empty`,
+	picGoUnavailable: "PicGo is unavailable. Check that the desktop service is running.",
 	'130110': `Clipboard write failed`,
 	'130112': `Douban returned a login redirect or blocked the current network request. Log in again, then retry later or use another network if needed`,
 	'130113': `The Douban detail page has no subject identity. Blank note creation was stopped; log in again and retry`,

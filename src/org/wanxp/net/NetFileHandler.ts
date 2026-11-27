@@ -100,7 +100,7 @@ export default class NetFileHandler {
 
 	async uploadClipboardFile(context:HandleContext): Promise<ResultI> {
 		const response = await HttpUtil.httpRequest(
-			context.settings.pictureBedSetting.url, {}, context.plugin.settingsManager, {method: "post"});
+			context.settings.pictureBedSetting.url, {}, context.plugin.settingsManager, {method: "post", timeoutMs: 60_000});
 		const data = response.textJson as ResultI;
 		return data;
 	}

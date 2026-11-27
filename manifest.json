@@ -1,7 +1,7 @@
 {
 	"id": "obsidian-douban-plugin",
-	"name": "Douban",
-	"version": "2.5.1",
+	"name": "Douban Remix",
+	"version": "2.6.0",
 	"minAppVersion": "0.12.0",
 	"description": "This is a plugin that can import movies/books/musics/notes/games info data from Douban for Obsidian .",
 	"author": "Wanxp",

@@ -184,6 +184,7 @@ const BookKeyValueMap: Map<string, string> = new Map(
 		['出版社:', 'publisher'],
 		['原作名:', 'originalTitle'],
 		['出版年:', 'datePublished'],
+		['出版时间:', 'datePublished'],
 		['页数:', 'totalPage'],
 		['定价:', 'price'],
 		['装帧:', 'binding'],
